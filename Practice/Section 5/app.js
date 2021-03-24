@@ -5,11 +5,6 @@ const app= express();
 const adminRoutes= require('./routes/admin')
 const shopRoutes= require('./routes/shop')
 
-// app.use((req,res,next)=>{
-//     console.log("In another MiddleWare");
-//     res.send('<h1>Hello from Express</h1>')
-// });
-
 app.use(bodyParser.urlencoded({extended:false}));
 
 app.use(express.static(path.join(__dirname,'public')));
