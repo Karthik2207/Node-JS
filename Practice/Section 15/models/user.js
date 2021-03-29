@@ -15,11 +15,3 @@ const User = sequelize.define('user', {
 });
 
 module.exports = User;
-
-// id: {
-  //   type: Sequelize.INTEGER,
-  //   autoIncrement: true,
-  //   allowNull: false,
-  //   primaryKey: true
-  // },
-  //name: Sequelize.STRING,

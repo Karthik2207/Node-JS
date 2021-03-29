@@ -18,9 +18,9 @@ const app = express();
 const store= new MySQLStore({
   host: 'localhost',
 	port: 3306,
-	user: 'root',
+	user: 'root', 
 	password: 'kartik1998@',
-	database: 'session_test',
+	database: 'node-complete1',
   schema: {
 		tableName: 'sessions'		
 	}}
@@ -55,7 +55,7 @@ app.use((req,res,next)=>{
     })
     .catch(err => console.log(err));
 })
-
+  
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -75,8 +75,8 @@ User.hasMany(Order);
 Order.belongsToMany(Product, { through: OrderItem });
 
 sequelize
-  // .sync({ force: true })
-  .sync()
+  .sync({ force: true })
+  // .sync()
   .then(result => {
     return User.findByPk(1);
     // console.log(result);

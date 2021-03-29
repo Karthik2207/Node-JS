@@ -4,6 +4,11 @@ const express = require('express');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 
+const csrf=require('csurf');
+const csrfProtection= csrf();
+
+const flash=require('connect-flash');
+
 const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
 const Product = require('./models/product');
@@ -18,7 +23,7 @@ const app = express();
 const store= new MySQLStore({
   host: 'localhost',
 	port: 3306,
-	user: 'root',
+	user: 'root', 
 	password: 'kartik1998@',
 	database: 'node-complete',
   schema: {
@@ -44,18 +49,26 @@ app.use(
   })
 );
 
+app.use(csrfProtection);
+app.use(flash());
+
 app.use((req,res,next)=>{
   if(!req.session.user){
     return next();
   }
-  User.findByPk(req.session.user.id)
+  User.findByPk(req.session.user.email)
     .then(user => {
       req.user= user;
       next();
     })
     .catch(err => console.log(err));
 })
-
+  
+app.use((req,res,next)=>{
+  res.locals.isAuthenticated =req.session.isLoggedIn;
+  res.locals.csrfToken= req.csrfToken();
+  next();
+}); //So for Every Render function this fields will be set 
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -77,7 +90,7 @@ Order.belongsToMany(Product, { through: OrderItem });
 sequelize
   // .sync({ force: true })
   .sync()
-  .then(result => {  
+  .then(result => {    
     app.listen(3000);
   })
   .catch(err => {
