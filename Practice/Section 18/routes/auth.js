@@ -16,9 +16,9 @@ router.post('/login',
     [
         body('email').isEmail()
         .withMessage('Please enter a valid email')
-        ,
+        .normalizeEmail(),
     body('password', 'Please enter a password with atleast 5 characters')
-    .isLength({min:5})
+    .isLength({min:5}).trim()
     ],
     authController.postLogin);
 
@@ -30,10 +30,10 @@ router.post('/signup',
                 return Promise.reject('E-mail already exists.');
             }
         });
-    }) ,
+    }).normalizeEmail() ,
         body('password', 'Please enter a password with atleast 5 characters')
-        .isLength({min:5}),
-        body('confirmPassword').custom((value, {req})=>{
+        .isLength({min:5}).trim(),
+        body('confirmPassword').trim().custom((value, {req})=>{
             if(value !== req.body.password){
                 throw new Error('Passwords need to match');
             }
