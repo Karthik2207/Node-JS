@@ -118,7 +118,7 @@ exports.postReset = (req, res, next) => {
         const resetTokenExpiration= Date.now()+ 3600000; //1hr
         return user.update({resetToken:token, resetTokenExpiration: resetTokenExpiration})
       }).then(result=>{
-        console.log("Token",token);
+        console.log("Token---------------",token);
         res.redirect('/')
         //http://localhost:3000/reset/token to reset New Password
       })
