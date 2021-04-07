@@ -3,6 +3,8 @@ const path =require('path');
 const Post = require('./models/post');
 const User = require('./models/user');
 
+const cors = require('cors');
+
 const express = require('express');
 const multer = require('multer');
 
@@ -36,6 +38,7 @@ const fileFilter = (req, file, cb) => {
 
 
 const sequelize = require('./util/database');
+const { Socket } = require('dgram');
 app.use(express.json()); 
 
 app.use(
@@ -43,6 +46,8 @@ app.use(
 );
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
+
+app.use(cors());
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -67,7 +72,11 @@ sequelize
   // .sync({ force: true })
   .sync()
   .then(result => {    
-    app.listen(8081);
+    const server =app.listen(8081);
+    const io =require('./socket').init(server); //Web Sockets build upon http
+    io.on('connection', socket=>{
+      console.log('Client Connected');
+    })
   })
   .catch(err => {
     console.log(err);
